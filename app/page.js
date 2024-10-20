@@ -69,19 +69,20 @@ export default function Home() {
   }, [message, isLoading]);
 
   // Handle Enter key press to send the message
-  const handleKeyPress = (event) => {
+  const handleKeyDown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
       sendMessage();
     }
   };
+  
 
   // Ensure the input box stays focused after rendering
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (inputRef.current && !isLoading) {
+      inputRef.current.focus(); // Ensure the input stays focused
     }
-  }, [isLoading]);
+  }, [isLoading, message]); // Trigger when message or loading state changes
+  
 
   // Welcome Page
   const WelcomePage = () => (
@@ -124,15 +125,15 @@ export default function Home() {
       <MessageList messages={messages} />
 
       <Stack direction="row" spacing={2} sx={{ width: '100%', maxWidth: 600 }}>
-        <TextField
-          fullWidth
-          value={message}
-          inputRef={inputRef} // Keep input focused
-          onChange={handleMessageChange}
-          onKeyPress={handleKeyPress}
-          placeholder="Describe what you need..."
-          disabled={isLoading}
-        />
+      <TextField
+        fullWidth
+        value={message}
+        inputRef={inputRef} // Keep input focused
+        onChange={handleMessageChange}
+        onKeyDown={handleKeyDown} // Use onKeyDown instead of onKeyPress
+        placeholder="Describe what you need..."
+        disabled={isLoading}
+      />
         <Button
           variant="contained"
           onClick={sendMessage}
